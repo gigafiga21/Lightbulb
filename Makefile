@@ -13,5 +13,6 @@ docker:
 		lightbulb-builder
 
 # Check if all packages required for build installed
+# {String} NO_COLORS - turn offs colorized output
 check:
-	@./Scripts/VersionChecks.sh
+	@./Scripts/VersionChecks.sh $(if $(NO_COLORS),--no-colors,)

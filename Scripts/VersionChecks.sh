@@ -8,22 +8,29 @@ if [ `command -v busybox` ]; then
     BUSYBOX=`busybox 2>&1 | head -n 1 | cut -d ' ' -f 1-2`;
 fi
 
+# Colors for output
+if [[ $1 != "--no-colors" ]]; then
+    RED="\e[31m";
+    GREEN="\e[32m";
+    RESET="\e[0m";
+fi
+
 # Displays info about shell command
 # {String} $1 - command name
 # {String} $2 - expected version
 # {String} $3 - actual version
 function checkCommand {
     if [[ -n "$BUSYBOX" && `busybox 2>&1 | grep -i $1` ]]; then
-        printf "+ $1 found\n";
+        printf "${GREEN}+ $1 found\n${RESET}";
         printf "  Expected version: >= $2\n";
         printf "  Found version: $BUSYBOX\n";
     elif [ `command -v $1` ]; then
-        printf "+ $1 found\n";
+        printf "${GREEN}+ $1 found\n${RESET}";
         printf "  Expected version: >= $2\n";
         printf "  Found version: ";
         eval $3;
     else
-        printf -- "- $1 not found\n";
+        printf -- "${RED}- $1 not found\n${RESET}";
         return 1;
     fi
 
@@ -34,7 +41,7 @@ function checkCommand {
 VERSION="bash --version | head -n1 | cut -d\" \" -f2-4";
 checkCommand bash 3.2 "$VERSION";
 if [ -n `readlink -f /bin/sh | grep -q bash` ]; then
-    printf "  ERROR: /bin/sh should be a symbolic or hard link to bash\n";
+    printf "  ${RED}ERROR: /bin/sh should be a symbolic or hard link to bash\n${RESET}";
 fi
 
 # binutils
@@ -48,9 +55,9 @@ if [ $? == 0 ]; then
     if [ -x /usr/bin/yacc ]; then
         printf "  WARNING: yacc is `/usr/bin/yacc --version | head -n1`";
     elif [[ -h /usr/bin/yacc && `readlink -f /usr/bin/yacc` != `command -v bison` ]]; then
-        printf "  ERROR: /usr/bin/yacc should be a link to bison\n";
+        printf "  ${RED}ERROR: /usr/bin/yacc should be a link to bison\n${RESET}";
     else
-        printf "  ERROR: yacc not found\n";
+        printf "  ${RED}ERROR: yacc not found\n${RESET}";
     fi
 fi
 
@@ -77,9 +84,9 @@ if [ $? == 0 ]; then
     if [ -x /usr/bin/awk ]; then
         printf "  WARNING: awk is `/usr/bin/awk --version | head -n1`\n";
     elif [[ -h /usr/bin/awk && `readlink -f /usr/bin/awk` != `command -v gawk` ]]; then
-        printf "  ERROR: /usr/bin/awk should be a link to gawk\n";
+        printf "  ${RED}ERROR: /usr/bin/awk should be a link to gawk\n${RESET}";
     else 
-        printf "  ERROR: awk not found\n";
+        printf "  ${RED}ERROR: awk not found\n${RESET}";
     fi
 fi
 
@@ -95,7 +102,7 @@ if [ $? == 0 ]; then
     if [ -x dummy ]; then
         printf "  Additional info: g++ compilation OK\n";
     else
-        printf "  ERROR: g++ test compilation failed\n";
+        printf "  ${RED}ERROR: g++ test compilation failed\n${RESET}";
     fi
     rm -f dummy.c dummy
 fi
@@ -113,7 +120,7 @@ VERSION="gzip --version | head -n1";
 checkCommand gzip 1.3.12 "$VERSION";
 
 # Linux kernel
-printf "+ Linux kernel\n";
+printf "${GREEN}+ Linux kernel\n${RESET}";
 printf "  Expected version: >= 3.2\n";
 printf "  Found version: ";
 cat /proc/version
