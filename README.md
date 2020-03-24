@@ -1,5 +1,5 @@
 # Lightbulb
-Small linux distribution based on Linux From Scratch book.
+Small linux distribution based on Linux From Scratch book v9.1.
 
 
 ## Requirements:
@@ -34,3 +34,11 @@ docker run -it \
 
 cd lightbulb    # in container shell
 ```
+
+
+## Building
+
+### Checking required packages
+To check if you has all packages required for building on your linux machine run `make check`. This will list required packages and theirs state (installed/not installed and their versions). Notice that you should check versions of packages manually (requred versions will be listed). Also do not ignore `ERROR:` messages.
+
+If your terminal has not color support set `NO_COLOR := 1` in Makefile or run `make NO_COLOR="1" [target_name]`.
