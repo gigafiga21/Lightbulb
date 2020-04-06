@@ -40,7 +40,7 @@ function checkCommand {
 # bash
 VERSION="bash --version | head -n1 | cut -d\" \" -f2-4";
 checkCommand bash 3.2 "$VERSION";
-if [ -n `readlink -f /bin/sh | grep -q bash` ]; then
+if [ -z `readlink -f /bin/sh | grep -i bash` ]; then
     printf "  ${RED}ERROR: /bin/sh should be a symbolic or hard link to bash\n${RESET}";
 fi
 
@@ -53,7 +53,7 @@ VERSION="bison --version | head -n1";
 checkCommand bison 2.7 "$VERSION";
 if [ $? == 0 ]; then
     if [ -x /usr/bin/yacc ]; then
-        printf "  WARNING: yacc is `/usr/bin/yacc --version | head -n1`";
+        printf "  WARNING: yacc is `/usr/bin/yacc --version | head -n1`\n";
     elif [[ -h /usr/bin/yacc && `readlink -f /usr/bin/yacc` != `command -v bison` ]]; then
         printf "  ${RED}ERROR: /usr/bin/yacc should be a link to bison\n${RESET}";
     else
